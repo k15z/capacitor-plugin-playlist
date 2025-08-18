@@ -157,9 +157,6 @@ class PlaylistManager(application: Application) :
 
     fun removeItem(index: Int, itemId: String): AudioTrack? {
         val wasPlaying = isPlaying
-        if (playlistHandler != null) {
-            playlistHandler!!.pause(true)
-        }
         var currentPosition = currentPosition
         var foundItem: AudioTrack? = null
         var removingCurrent = false
@@ -177,10 +174,14 @@ class PlaylistManager(application: Application) :
             audioTracks.removeAt(resolvedIndex)
         }
         items = audioTracks
-        currentPosition = if (removingCurrent) currentPosition else audioTracks.indexOf(currentItem)
-        beginPlayback(currentPosition.toLong(), !wasPlaying)
-        if (this.playlistHandler != null) {
-            this.playlistHandler!!.updateMediaControls()
+        if (removingCurrent) {
+            if (playlistHandler != null) {
+                playlistHandler!!.pause(true)
+            }
+            beginPlayback(0, !wasPlaying)
+            if (this.playlistHandler != null) {
+                this.playlistHandler!!.updateMediaControls()
+            }
         }
         return foundItem
     }
@@ -188,9 +189,6 @@ class PlaylistManager(application: Application) :
     fun removeAllItems(its: ArrayList<TrackRemovalItem>): ArrayList<AudioTrack> {
         val removedTracks = ArrayList<AudioTrack>()
         val wasPlaying = isPlaying
-        if (playlistHandler != null) {
-            playlistHandler!!.pause(true)
-        }
         var currentPosition = currentPosition
         val currentItem = currentItem // may be null
         var removingCurrent = false
@@ -205,9 +203,15 @@ class PlaylistManager(application: Application) :
                 audioTracks.removeAt(resolvedIndex)
             }
         }
-        items = audioTracks
-        currentPosition = if (removingCurrent) currentPosition else audioTracks.indexOf(currentItem)
-        beginPlayback(currentPosition.toLong(), !wasPlaying)
+        if (removingCurrent) {
+            if (playlistHandler != null) {
+                playlistHandler!!.pause(true)
+            }
+            beginPlayback(0, !wasPlaying)
+            if (this.playlistHandler != null) {
+                this.playlistHandler!!.updateMediaControls()
+            }
+        }
         return removedTracks
     }
 
