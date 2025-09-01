@@ -55,6 +55,9 @@ export interface PlaylistPlugin {
 
     // advanced
     setPlaybackRate(options: SetPlaybackRateOptions): Promise<void>;
+
+    // inserts a track at a position or after an id
+    insertItem(options: InsertItemOptions): Promise<void>;
 }
 
 export interface PlaylistOptions {
@@ -113,4 +116,10 @@ export interface SetLoopOptions {
 
 export interface SetPlaybackRateOptions {
     rate: number
+}
+
+export interface InsertItemOptions {
+    item: AudioTrack;
+    index?: number;
+    id?: string;
 }
